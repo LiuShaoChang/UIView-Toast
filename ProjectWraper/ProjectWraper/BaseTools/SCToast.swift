@@ -125,7 +125,6 @@ public extension UIView {
     }
     
     
-    
     func makeToast(_ image: UIImage?, _ title: String?, _ message: String?, imageRelativePosition: ToastImageRelativePosition, position: ToastPosition, duration: TimeInterval) {
         
         var config = ToastConfig()
@@ -145,7 +144,7 @@ public extension UIView {
     fileprivate func showToast(_ toast: UIView, position:ToastPosition = ToastConfig().toastPosition, config:ToastConfig = ToastConfig(), completion:(() -> Void)? = nil) {
         
         let point = position.centerPoint(forToast: toast, inSuperview: self, config)
-        showToast(toast, point: point, config: ToastConfig(), completion: completion)
+        showToast(toast, point: point, config: config, completion: completion)
     }
     
     fileprivate func showToast(_ toast: UIView, point: CGPoint, config:ToastConfig = ToastConfig(), completion:(() -> Void)? = nil) {
@@ -162,6 +161,9 @@ public extension UIView {
             objc_setAssociatedObject(toast, &ToastAssociateKeys.timer, timer, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
+    
+    // MARK: - show toastActivity
+    
     
     // MARK: - hide toast
     @objc fileprivate func toastTimerDidFinish(_ timer: Timer) {
@@ -283,6 +285,7 @@ public extension UIView {
             }
             let higherHeight = max(imageRect.size.height, totalTextHeight)
             wrapperHeight = higherHeight + 2 * configuration.toastVerticalMargin
+            imageRect.origin.y = (wrapperHeight - imageRect.size.height) / 2
             
         case .upDown:
     
@@ -308,7 +311,11 @@ public extension UIView {
                 }
             }
             wrapperHeight = totalHeight + 2 * configuration.toastVerticalMargin
+            imageRect.origin.x = (wrapperWidth - imageRect.size.width) / 2
         }
+        let textWidth = max(longerLabelWidth, imageRect.size.width)
+        titleRect.size = CGSize(width: textWidth, height: titleRect.size.height)
+        messageRect.size = CGSize(width: textWidth, height: messageRect.size.height)
         wrapperView.frame = CGRect(x: 0.0, y: 0.0, width: wrapperWidth, height: wrapperHeight)
         
         if let imageview = imageView {
@@ -317,13 +324,11 @@ public extension UIView {
         }
         
         if let titlelabel = titleLabel {
-            titleRect.size = CGSize(width: longerLabelWidth, height: titleRect.size.height)
             titlelabel.frame = titleRect
             wrapperView.addSubview(titlelabel)
         }
         
         if let msglabel = messageLabel {
-            messageRect.size = CGSize(width: longerLabelWidth, height: messageRect.size.height)
             msglabel.frame = messageRect
             wrapperView.addSubview(msglabel)
         }
