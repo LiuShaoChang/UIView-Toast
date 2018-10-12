@@ -1,6 +1,6 @@
 # SCToast
-这是一个view的extension,想要弹出一个toast只需要一句代码,支持很多样式.
-> 只有不断学习,方能成就自我
+这是一个view的extension,想要弹出一个toast只需要一句代码,支持很多样式.后续会支持多种hud.
+
 ## 01样式
 code:
 ```
